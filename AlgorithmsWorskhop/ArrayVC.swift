@@ -121,6 +121,7 @@ class ArrayVC: BaseViewController {
                 //2. Valid Mountain Array
                 let mountain = validMountainArray([0,3,2,1])
                 print(mountain)
+                replaceElements1([17,18,5,4,6,1])
                 
             default:
                 break
@@ -167,8 +168,10 @@ class ArrayVC: BaseViewController {
                 
             case 2:
                // Find Max Consecutives One II
-                let num = maxConsecutiveOnesII([1,0,1,1,0])
+                let num = maxConsecutiveOnesII([1,0,1,1,0,1,1,0,1,1])
                 print(num)
+                let n = maxConsecutiveOnesII_SlidingWindow([1,0,1,1,0,1,1,0,1,1,1])
+                print(n)
                 
             case 3:
                 //7. Find All Disappeared Numbers in an Array
@@ -184,8 +187,6 @@ class ArrayVC: BaseViewController {
         }
         
     }
-    
-    
     
     func countDigits(_ n: Int) -> Int {
         var number = n
@@ -305,7 +306,7 @@ class ArrayVC: BaseViewController {
         var p1 = 0
         var p2 = 0
         var result = [Int]()
-        while p1 < (nums1.count - nums2.count) && p2 < nums2.count {
+        while p1 < m && p2 < n {
             if nums1[p1] < nums2[p2] {
                 result.append(nums1[p1])
                 p1 += 1
@@ -314,17 +315,35 @@ class ArrayVC: BaseViewController {
                 p2 += 1
             }
         }
-        while p1 < (nums1.count - nums2.count) {
+        while p1 < m {
             result.append(nums1[p1])
             p1 += 1
         }
-        while p2 < nums2.count {
+        while p2 < n {
             result.append(nums2[p2])
             p2 += 1
         }
+//        while p1 < (nums1.count - nums2.count) && p2 < nums2.count {
+//            if nums1[p1] < nums2[p2] {
+//                result.append(nums1[p1])
+//                p1 += 1
+//            } else {
+//                result.append(nums2[p2])
+//                p2 += 1
+//            }
+//        }
+//        while p1 < (nums1.count - nums2.count) {
+//            result.append(nums1[p1])
+//            p1 += 1
+//        }
+//        while p2 < nums2.count {
+//            result.append(nums2[p2])
+//            p2 += 1
+//        }
         
         print(result)
     }
+    
     
 }
 
@@ -486,6 +505,34 @@ extension ArrayVC {
         
         return isValid
     }
+    
+    
+       func replaceElements1(_ arr: [Int]) -> [Int] {
+           
+           guard arr.count > 1 else { return arr }
+           if arr.count == 1 { return [-1] }
+           
+           var arr = arr
+           var j = arr.count - 1
+           for i in (0..<arr.count).reversed(){
+              // print(arr[i])
+               if arr[j] > arr[i] {
+                   arr[i] = arr[j]
+               } else {
+                   j = i
+               }
+               
+               if i == arr.count - 1 {
+                   arr.remove(at: 0)
+                   arr.insert(-1, at: i)
+                   j -= 1
+               }
+    
+           }
+           
+           
+           return arr
+       }
     
 }
 
@@ -774,6 +821,32 @@ extension ArrayVC {
         
         return res
         
+    }
+    
+    func maxConsecutiveOnesII_SlidingWindow(_ nums: [Int]) -> Int {
+        //[1,0,1,1,0,1,1,0,1,1,1]
+        
+        var maxWindowSize = Int.min
+        var j = 0
+        var zeroSum = 0
+        
+        for i in 0..<nums.count {
+
+            if nums[i] == 0 {
+                zeroSum += 1
+                
+                while(zeroSum == 2){
+                    while (nums[j] != 0) {
+                        j += 1
+                    }
+                    zeroSum -= 1
+                }
+                
+                maxWindowSize = maxWindowSize > i - j + 1 ? maxWindowSize : i - j + 1
+            }
+        }
+    
+        return maxWindowSize
     }
     
     func maxConsecutiveOnesII(_ nums: [Int]) -> Int {
