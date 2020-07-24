@@ -11,7 +11,7 @@ import UIKit
 class HomeVC: UIViewController {
     
     let tableView = UITableView()
-    let contentList = ["Array", "Interview Questions-Array", "IQ- Strings", "IQ- Linked List", "IQ- Trees", "IQ- Dynamic Programming", "IQ- Design", "IQ- Math", "IQ- Others","11 Questions - Udemy"]
+    let contentList = ["Array", "Interview Questions-Array", "IQ- Strings", "IQ- Linked List", "IQ- Trees", "IQ- Dynamic Programming", "IQ- Math","11 Questions - Udemy"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +65,11 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
             let vc = IQ_DynamicProgramming()
             self.navigationController?.pushViewController(vc, animated: true)
             
-        case 10:
+        case 6:
+            let vc = IQ_Math()
+            self.navigationController?.pushViewController(vc, animated: true)
+            
+        case 7:
             let vc = UdemyVC()
             self.navigationController?.pushViewController(vc, animated: true)
             

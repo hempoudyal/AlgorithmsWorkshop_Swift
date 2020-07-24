@@ -24,7 +24,11 @@ class IQ_DynamicProgramming: BaseViewController {
                               objects: ["Climbing Stairs",
                                         "Best Time to Buy and Sell Stock",
                                         "Maximum Subarray",
-                                        "House Rubber"])
+                                        "House Robber"]),
+                      
+                      Objects(key: "Design",
+                      objects: ["Shuffle an Array",
+                                "Min Stack"])
         ]
         
         
@@ -58,9 +62,22 @@ class IQ_DynamicProgramming: BaseViewController {
                 print(c)
                 let x = climbStairs2(5)
                 print(x)
+                
+            case 1:
+                let m = maxProfit([2,5,7,1,8])
+                print(m)
+                
+            case 2:
+                let m = maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
+                print(m)
+                
+            case 3:
+                let r = rob([1,1,3,4])
+                print(r)
             default:
                 break
             }
+                
             
         default:
             break
@@ -105,7 +122,6 @@ extension IQ_DynamicProgramming {
     
     func climbStairsHelper(_ n: Int,_ memo: inout [Int: Int]) -> Int {
         if n <= 1 { return 1 }
-        print(memo[n])
         if memo[n] != nil { return memo[n]! }
         memo[n] = climbStairsHelper(n - 1, &memo) + climbStairsHelper(n - 2, &memo)
         return memo[n]!
@@ -127,5 +143,117 @@ extension IQ_DynamicProgramming {
         }
         
         return d[n]!
+    }
+    
+    //2. Best Time to Buy and Sell Stock
+    // Approach : One Pass, find max value and min value, get the diff
+    
+    func maxProfit(_ prices: [Int]) -> Int {
+        var max = Int.min
+        var min = Int.max
+        var diff = 0
+        var profit = 0
+        
+        for i in 0..<prices.count {
+            if prices[i] < min {
+                min = prices[i]
+                max = prices[i]
+            }
+            
+            if prices[i] > max {
+                max = prices[i]
+            }
+            
+            diff = max - min
+            if diff > profit {
+                profit = diff
+            }
+        }
+        
+        return profit
+    }
+    
+    func better_maxProfit(_ prices: [Int]) -> Int {
+        var min = Int.max
+        var profit = 0
+        
+        for i in 0..<prices.count {
+            if prices[i] < min {
+                min = prices[i]
+            } else if (prices[i] - min > profit) {
+                profit = prices[i] - min
+            }
+        }
+        return profit
+    }
+    
+    func maxSubArray(_ nums: [Int]) -> Int {
+        //Beats 78% of submission - O(n)
+        var maxSub = Int.min
+        var subSum = 0
+        
+        for n in nums {
+            subSum += n
+            
+            if subSum < n {
+                subSum = n
+            }
+            
+            if subSum > maxSub {
+                maxSub = subSum
+            }
+        }
+        
+        return maxSub
+    }
+    
+    func rob(_ nums: [Int]) -> Int {
+        //Beats 95%
+        
+        if nums.count == 0 { return 0 }
+        if nums.count == 1 { return nums[0] }
+        if nums.count == 2 { return max(nums[0], nums[1])}
+        
+        var dp = Array(repeating: 0, count: nums.count)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        
+        for i in 2..<nums.count {
+            dp[i] = max(nums[i] + dp[i - 2], dp[i - 1])
+        }
+        
+        return dp[nums.count - 1]
+    }
+    
+}
+
+//MARK:- Design
+
+extension IQ_DynamicProgramming {
+    
+    class Solution{
+        var array = [Int]()
+        var original = [Int]()
+        
+        init(_ nums: [Int]) {
+            array = nums
+            original = nums
+        }
+    
+        func reset() -> [Int] {
+            array = original
+            return original
+        }
+    
+        func shuffle() -> [Int] {
+            for i in 1..<array.count {
+                let temp = array[i] //swap with random element
+                let randomIndex = (0..<i).randomElement()
+                array[i] = array[randomIndex!]
+                array[randomIndex!] = temp
+            }
+            
+            return array
+        }
     }
 }

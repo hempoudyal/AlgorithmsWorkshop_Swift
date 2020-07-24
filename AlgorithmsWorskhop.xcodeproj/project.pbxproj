@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9928CBCB24C2C37300D53C23 /* IQ_Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9928CBCA24C2C37300D53C23 /* IQ_Math.swift */; };
 		9966425324AB5DCE005AF541 /* UdemyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9966425224AB5DCE005AF541 /* UdemyVC.swift */; };
 		998E1E6D249DDDA1008E1512 /* IQ-StringVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998E1E6C249DDDA1008E1512 /* IQ-StringVC.swift */; };
 		9996E3FE248A02A7008EE887 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9996E3FD248A02A7008EE887 /* AppDelegate.swift */; };
@@ -24,6 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9928CBCA24C2C37300D53C23 /* IQ_Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IQ_Math.swift; sourceTree = "<group>"; };
 		9966425224AB5DCE005AF541 /* UdemyVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UdemyVC.swift; sourceTree = "<group>"; };
 		998E1E6C249DDDA1008E1512 /* IQ-StringVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IQ-StringVC.swift"; sourceTree = "<group>"; };
 		9996E3FA248A02A7008EE887 /* AlgorithmsWorskhop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlgorithmsWorskhop.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +84,7 @@
 				999FFF6424B881B500F030C0 /* IQ-LinkedList.swift */,
 				99D50D2524BD88A700604E24 /* IQ-Trees.swift */,
 				99D50D2724BDA66F00604E24 /* IQ-DynamicProgramming.swift */,
+				9928CBCA24C2C37300D53C23 /* IQ_Math.swift */,
 				9966425224AB5DCE005AF541 /* UdemyVC.swift */,
 				9996E403248A02A7008EE887 /* Main.storyboard */,
 				9996E406248A02AD008EE887 /* Assets.xcassets */,
@@ -173,6 +176,7 @@
 				9966425324AB5DCE005AF541 /* UdemyVC.swift in Sources */,
 				99BD9F71249717B40098DB08 /* IQ-ArrayVC.swift in Sources */,
 				9996E400248A02A7008EE887 /* SceneDelegate.swift in Sources */,
+				9928CBCB24C2C37300D53C23 /* IQ_Math.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
