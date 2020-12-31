@@ -74,7 +74,7 @@ extension IQ_Trees {
     //2. Valid Binary Tree
     //USing Recursion
     func isValidBST(_ root: TreeNode?) -> Bool {
-        guard let root = root else { return false }
+        guard let root = root else { return true } // [] empty tree is also a valid BST
        
         return isBSTHelper(root, Int.min, Int.max)
     }
@@ -92,31 +92,31 @@ extension IQ_Trees {
     //In Order Traversal
     
     func isValidBST1(_ treeNode: TreeNode?) -> Bool {
-           var array = [Int]()
-           inOrderTraversal(treeNode, array: &array)
-
-           if array.count < 2 {
-               return true
-           }
-
-           for i in 1 ..< array.count {
-               if array[i] <= array[i - 1] {
-                   return false
-               }
-           }
-
-           return true
-       }
-
-       func inOrderTraversal(_ treeNode: TreeNode?, array: inout [Int]) {
-           guard let treeNode = treeNode else {
-               return
-           }
-
-           inOrderTraversal(treeNode.left, array: &array)
-           array.append(treeNode.val)
-           inOrderTraversal(treeNode.right, array: &array)
-       }
+        var array = [Int]()
+        inOrderTraversal(treeNode, array: &array)
+        
+        if array.count < 2 {
+            return true
+        }
+        
+        for i in 1 ..< array.count {
+            if array[i] <= array[i - 1] {
+                return false
+            }
+        }
+        
+        return true
+    }
+    
+    func inOrderTraversal(_ treeNode: TreeNode?, array: inout [Int]) {
+        guard let treeNode = treeNode else {
+            return
+        }
+        
+        inOrderTraversal(treeNode.left, array: &array)
+        array.append(treeNode.val)
+        inOrderTraversal(treeNode.right, array: &array)
+    }
     
     //3. Symmetric Tree
     func isSymmetric(_ root: TreeNode?) -> Bool {
@@ -162,10 +162,11 @@ extension IQ_Trees {
         while !q.isEmpty {
             lists.append(q.map{ $0.val })
             
-            q = q.reduce([]) {l, t in
-                l + [t.left, t.right]
-            }.compactMap({$0})
             
+            q = q.reduce([]) {y, t in
+                y + [t.left, t.right]
+            }.compactMap({$0})
+
         }
         return lists
     }
@@ -212,4 +213,103 @@ extension IQ_Trees {
         
     }
     
+}
+
+//Revision
+extension IQ_Trees{
+    
+    func isValidBST_Rev(_ root: TreeNode?) -> Bool {
+        guard let root = root else { return true } // empty tree [] is also a valid BST
+        
+        return validateBST(root, min: Int.min, max: Int.max)
+    }
+    
+    func validateBST(_ root: TreeNode?, min: Int, max: Int) -> Bool{
+        guard let root = root else { return true }
+        
+        if root.val <= min || root.val >= max {
+            return false
+        }
+        
+        return validateBST(root.left, min: min, max: root.val) && validateBST(root.right, min: root.val, max: max)
+    }
+    
+    func isSymmetric_Rev(_ root: TreeNode?) -> Bool {
+        if root == nil { return true }
+        
+        return isMirror(root, root)
+    }
+    
+    func isMirror( _ left: TreeNode?, _ right: TreeNode?) -> Bool {
+        
+        if left == nil || right == nil { return false }
+        if left == nil && right == nil { return true }
+        
+        return left?.val == right?.val && isMirror(left?.left, right?.right) && isMirror(left?.right, right?.left)
+    }
+    
+    func levelOrder_Rev(_ root: TreeNode?) -> [[Int]] {
+        guard let root = root else { return [] }
+        
+        var q = [TreeNode](), lists = [[Int]]()
+        q.append(root)
+        
+        while !q.isEmpty {
+            lists.append(q.map{ $0.val })
+            
+            q = q.reduce([]) {l, t in //l -> existing value
+                l + [t.left, t.right]
+            }.compactMap({$0})
+            
+        }
+        
+        return lists
+    }
+    
+    func levelOrder_Rev2(_ root: TreeNode?) -> [[Int]] {
+        //Without Higer Order Functions
+        
+        guard let root = root else { return [] }
+        var result = [[Int]]()
+        
+        var q = [TreeNode?]()
+        q.append(root)
+        
+        while !q.isEmpty {
+            let size = q.count // get the number of nodes in a level
+            var currentLevel = [Int]() //list of nodes in a level - hold all the node values
+            
+            for _ in 0..<size{
+                let current: TreeNode? = q.removeFirst()
+                currentLevel.append(current?.val ?? 0)
+                if current?.left != nil {
+                    q.append(current?.left)
+                }
+                if current?.right != nil {
+                    q.append(current?.right)
+                }
+            }
+            
+            result.append(currentLevel)
+        }
+        
+        return result
+    }
+    
+    func sortedArrayToBST_Rev(_ nums: [Int]) -> TreeNode? {
+        if nums.count == 0 { return nil }
+        
+        return constructBST_Rev(nums, 0, nums.count - 1)
+    }
+    
+    func constructBST_Rev(_ nums: [Int], _ min: Int, _ max: Int) -> TreeNode? {
+        if min > max { return nil }
+        
+        let mid = min + ( max - min ) / 2
+        let node: TreeNode? = TreeNode(nums[mid])
+        node?.left = constructBST_Rev(nums, min, mid - 1)
+        node?.right = constructBST_Rev(nums, mid + 1, max)
+        return node
+    }
+
 }

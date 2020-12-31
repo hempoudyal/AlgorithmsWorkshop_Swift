@@ -104,6 +104,9 @@ class ArrayVC: BaseViewController {
                 //Given a sorted array nums, remove the duplicates in-place such that each element appear only once and return the new length.
                 let dups = removeDuplicates([0,1,2,2,2,3,3,4])
                 print(dups)
+                let dupx = re_removeDeuplicates([0,0,1,1,1,2,2,3,3,4])
+                print(dupx)
+                
                 
             default:
                 break
@@ -892,4 +895,26 @@ extension ArrayVC {
     
 }
 
-
+//Revision
+extension ArrayVC {
+    func re_removeDeuplicates(_ nums:[Int]) -> Int{
+        if nums.count < 2 { return nums.count }
+        //never forget the basic check
+        
+        var nums = nums
+        var x = 0
+        var y = 1
+        for _ in 0..<nums.count{
+            if y == nums.count {
+                break
+            }
+            
+            if nums[x] != nums[y] {
+                nums[x + 1] = nums[y]
+                x += 1
+            }
+            y += 1
+        }
+        return x+1
+    }
+}

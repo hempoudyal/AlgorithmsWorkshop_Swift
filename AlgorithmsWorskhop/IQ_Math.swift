@@ -49,6 +49,8 @@ class IQ_Math: BaseViewController {
             case 0:
                 let f = fizzBuzz(10)
                 print(f)
+                let r = fizzBuzz_Rev(15)
+                print(r)
                 
             case 1:
                 let c = countPrimes(20)
@@ -59,10 +61,14 @@ class IQ_Math: BaseViewController {
             case 2:
                 let x = isPowerOfThree(243)
                 print(x)
+                let r = isPowerOfThree_Rev(243)
+                print(r)
                 
             case 3:
                 let r = romanToInt("LVIII")
                 print(r)
+                let x = romanToInt_Rev("IV")
+                print(x)
                 
             default:
                 break
@@ -75,8 +81,15 @@ class IQ_Math: BaseViewController {
                 print(n)
                 let x = hammingWeight2(00000000000000000000000000001011)
                 print(x)
+                let r = hammingWeight_Rev(0b000000000000000000000000001011)
+                print(r)
             case 1:
-                break
+                let h = hammingDistance(3, 1)
+                print(h)
+                let x = hammingDistance2(93, 73)
+                print(x)
+                let r = hammingDistance_Rev(93, 73)
+                print(r)
                 
             case 2:
                 let x = reverseBits(0b000010100101000001111010011100)
@@ -85,9 +98,30 @@ class IQ_Math: BaseViewController {
                 print(s)
                 let r = reverseBits3(0b000010100101000001111010011100)
                 print(r)
-            case 3:
-                break
+                let z = reverseBits_Rev(0b000010100101000001111010011100)
+                print(z)
                 
+            case 3:
+                let x = generate_PascalsTriangle(10)
+                print(x)
+                let r = generate_Rev(10)
+                print(r)
+                
+            case 4:
+                let r = isValid("()[]{}")
+                print(r)
+                let s = Sol_isValid("(])")
+                print(s)
+                let x = isValid_Rev("{()[]{}}")
+                print(x)
+                
+            case 5:
+                let m = missingNumber([9,6,4,2,3,5,7,0,1])
+                print(m)
+                let x = betterSol_MissingNumber([9,6,4,2,3,5,7,0,1])
+                print(x)
+                let r = missingNumber_Rev([9,6,4,2,3,5,7,0,1,8])
+                print(r)
             default:
                 break
             }
@@ -182,7 +216,6 @@ extension IQ_Math {
         if n <= 0 { return false }
 
         let i = log(Double(n)) / log(Double(3))
-        
         return pow(3.0, round(i)) == Double(n)
         
     }
@@ -300,7 +333,7 @@ extension IQ_Math {
             if input & 1 > 0 {
                 result = result + 1
             }
-            input = input >> 1
+            input >>= 1
         }
         
         return result
@@ -320,7 +353,140 @@ extension IQ_Math {
         return res
     }
     
+    func hammingDistance(_ x: Int,_ y: Int) -> Int {
+        var num1 = x, num2 = y
+        var count = 0
+        
+        for _ in 0..<32{
+            if num1 & 1 == 1 && num2 & 1 != 1{
+                count += 1
+            } else if num1 & 1 != 1 && num2 & 1 == 1{
+                count += 1
+            }
+            num1 >>= 1
+            num2 >>= 1
+        }
+        
+        return count
+    }
     
+    func hammingDistance2(_ x: Int,_ y: Int) -> Int {
+        let value = x ^ y
+        let string = String(value, radix: 2)
+        print(string)
+        
+        var count = string.count
+        for i in string.indices{
+            if string[i] == "0"{
+                count -= 1
+            }
+        }
+        
+        return count
+    }
+    
+    func generate_PascalsTriangle(_ numRows: Int) -> [[Int]] {
+        guard numRows > 0 else { return [] }
+        
+        var arr = [[Int]]()
+        
+        for i in 0..<numRows{
+            var nums = [Int]()
+            
+            for j in 0...i {
+                if j == 0 || j == i {
+                    nums.append(1)
+                } else {
+                    let prevArr = arr[i - 1]
+                    let n = prevArr[j] + prevArr[j - 1]
+                    nums.append(n)
+                }
+            }
+            
+            arr.append(nums)
+        }
+        
+        return arr
+    }
+    
+    func isValid(_ s: String) -> Bool {
+        // Valid Parantheses
+        if s == "" {return false}
+        
+        var arr = Array(s)
+        let dict : [Character: Int] = ["(": 1, ")": 1,"{": 2,"}": 2, "[": 3, "]": 3]
+        
+        let mid = s.count / 2
+        if dict[arr[mid]] == dict[arr[mid - 1]] {
+            arr.remove(at: mid - 1)
+            arr.remove(at: mid - 1)
+        } else {
+            return false
+        }
+        
+        let str = String(arr)
+        if str == "" { return true }
+
+        return isValid(str)
+    }
+    
+    func Sol_isValid(_ s: String) -> Bool {
+        // Using Stack
+        let bracketMap: [Character: Character] = ["(": ")", "[": "]",  "{": "}"]
+        let openPar = Set<Character>(["(","[","{"])
+        var stack = [Character]()
+        for i in s {
+            if openPar.contains(i){
+                stack.append(i)
+            } else if !stack.isEmpty{
+                if i == bracketMap[stack.last!]{
+                    stack.removeLast()
+                } else { return false }
+            } else {
+                return false
+            }
+        }
+        
+        return stack.isEmpty
+    }
+    
+    func missingNumber(_ nums: [Int]) -> Int {
+        
+        if nums.count == 0 { return 0 }
+        
+        var max = 0
+        for n in nums{
+            if n > max {
+                max = n
+            }
+        }
+        
+        let arr = Array(0...max)
+        let s1 = Set<Int>(arr)
+        let s2 = Set<Int>(nums)
+        let x = s1.symmetricDifference(s2)
+        print(x)
+        //way to go ahead
+        if x.count == 1{ return x.first! }
+        
+//        for s in s1{
+//            if !s2.contains(s){
+//                return s
+//            }
+//        }
+//
+        return max + 1
+        
+    }
+    
+    func betterSol_MissingNumber(_ nums: [Int]) -> Int {
+        var missing = nums.count
+        for i in 0..<nums.count {
+            missing ^= i ^ nums[i]
+        }
+        
+        return missing
+    }
 }
 
 
@@ -334,5 +500,183 @@ enum Bit: UInt8, CustomStringConvertible {
         case .zero:
             return "0"
         }
+    }
+}
+
+
+//MARK:- Revision
+extension IQ_Math{
+    func fizzBuzz_Rev(_ n: Int) -> [String] {
+        var s = [String]()
+        
+        for i in 1...n{
+            if i % 3 == 0 && i % 5 == 0 {
+                s.append("FizzBuzz")
+            } else if i % 5 == 0 {
+                s.append("Buzz")
+            } else if i % 3 == 0 {
+                s.append("Fizz")
+            } else {
+                s.append(String(i))
+            }
+        }
+        
+        return s
+    }
+    
+    func countPrimes_Rev(_ n: Int) -> Int {
+        if n <= 2 { return 0 }
+        var isPrime = Array(repeating: true, count: n )
+        isPrime[0] = false
+        isPrime[1] = false
+        var count = 0
+        
+        for i in 2..<n{
+            guard isPrime[i] else { continue }
+            count += 1
+            
+            var j = i + i
+            while j < n {
+                isPrime[j] = false
+                j += i
+            }
+        }
+        
+        return count
+    }
+    
+    func isPowerOfThree_Rev(_ n: Int) -> Bool {
+        if n <= 0 { return false }
+        
+        let i = log(Double(n)) / log(Double(3))
+        return pow(3.0, round(i)) == Double(n)
+    }
+    
+    func romanToInt_Rev(_ s: String) -> Int {
+        let romanDict:[Character: Int] = ["I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000]
+        var num = Int()
+        var prev = 0
+        
+        for c in s.reversed(){
+            let n = romanDict[c]!
+            if n < prev {
+                num -= n
+            } else {
+                num += n
+            }
+            prev = n
+        }
+        
+        return num
+    }
+    
+    func hammingWeight_Rev(_ n: Int) -> Int {
+        var n = n
+        var bits = 0
+        
+        while n != 0 {
+            if (1 & n) == 1 {
+                bits += 1
+            }
+            n >>= 1
+        }
+        
+        return bits
+    }
+    
+    func hammingDistance_Rev(_ x: Int, _ y: Int) -> Int {
+        var x = x, y = y
+        var count = 0
+        
+        for _ in 0..<32 {
+            if x & 1 != y & 1{
+                count += 1
+            }
+            x >>= 1
+            y >>= 1
+        }
+        
+        return count
+    }
+    
+    func reverseBits_Rev(_ n: Int) -> Int {
+        var result = 0
+        var n = n
+        print(n)
+        //00000010100101000001111010011100
+        
+        for _ in 0..<32{
+            result <<= 1
+            if n & 1 == 1 {
+                result += 1
+            }
+            n >>= 1
+        }
+        
+        return result
+        //00111001011110000010100101000000
+    }
+    
+    func generate_Rev(_ numRows: Int) -> [[Int]] {
+        if numRows < 1 { return [[]] }
+        var arr = [[Int]]()
+        
+        for i in 1...numRows{
+            var temp = [Int]()
+            
+            for j in 0..<i {
+                if j == 0 || j == i - 1 {
+                    temp.append(1)
+                } else {
+                    let prevRow = arr[i - 2]
+                    let num = prevRow[j - 1] + prevRow[j]
+                    temp.append(num)
+                }
+            }
+            
+            arr.append(temp)
+        }
+        
+        return arr
+    }
+    
+    func isValid_Rev(_ s: String) -> Bool {
+        //Didn't work - wrong approach - solve using Queue
+        let bracketDict: [Character: Character] = ["]":"[",")":"(","}":"{"]
+        let openArr : [Character] = ["[","(","{"]
+        var stack = [Character]()
+        
+        for c in s{
+            if openArr.contains(c){
+                stack.append(c)
+            } else if !openArr.contains(c){
+                let i = bracketDict[c]
+                if stack.last == i {
+                    stack.removeLast()
+                } else {
+                    return false
+                }
+            }
+        }
+        
+        return true
+    }
+    
+    func missingNumber_Rev(_ nums: [Int]) -> Int {
+        if nums.count == 0 { return 0 }
+        var maxValue = 0
+        
+        for n in nums{
+            maxValue = max(maxValue, n)
+        }
+        
+        let r = Array(0...maxValue)
+        let setA = Set<Int>(r)
+        let setB = Set<Int>(nums)
+        let diff = setA.symmetricDifference(setB)
+        
+        if diff.count == 1 { return diff.first! }
+    
+        return maxValue + 1
     }
 }

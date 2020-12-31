@@ -27,7 +27,12 @@ class IQ_StringVC: BaseViewController {
                                         "String to Integer (atoi)",
                                         "Implement strStr()",
                                         "Count and Say",
-                                        "Longest Common Prefix"])
+                                        "Longest Common Prefix"]),
+                        Objects(key: "Medium Category",
+                                objects:["Group Anagrams",
+                                         "Longest Substring Without Repeating Characters",
+                                         "Longest Palindromic Substring"])
+                      
         ]
         
         
@@ -89,8 +94,6 @@ class IQ_StringVC: BaseViewController {
             
             case 8:
                 //Longest common prefix
-//                let l = longestCommonPrefix(["flower","flow","flight"])
-//                print(l)
                 let l = betterSol_longestCommonPrefix(["flower","flow","flight"])
                 print(l)
                 permutation(string: "abc")
@@ -99,6 +102,38 @@ class IQ_StringVC: BaseViewController {
                 print(n)
                 
             default:
+                break
+            }
+        
+        case 1:
+             switch indexPath.row {
+             case 0:
+                let g = groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"])
+                print(g)
+                let r = groupAnagrams_Rev(["eat", "tea", "tan", "ate", "nat", "bat"])
+                print(r)
+                
+             case 1:
+                let x = lengthOfLongestSubstring("pwwkew")
+                print(x)
+                let l = sol_lengthOfLongestSubstring("pwwwkew")
+                print(l)
+                let b = betterSol_lengthOfLongestSubstring("pwwwkew")
+                print(b)
+                let y = longestSubstring("pwwwkew")
+                print(y)
+                let r = lengthOfLongestSubstring_Rev("pwwwkew")
+                print(r)
+                
+             case 2:
+                let p = longestPalindrome("cb")
+                print(p)
+                let b = betterSol_longestPalindrome("babaddab")
+                print(b)
+                let r = longestPalindrome_Rev("cbbd")
+                print(r)
+                
+             default:
                 break
             }
             
@@ -593,8 +628,9 @@ extension IQ_StringVC {
         //1. Horizontal Scanning
         // Beats 78 % - using swifts default prefix method
         
+        /*
         guard strs.count > 0 else { return "" }
-       /*  var prefix = strs[0]
+        var prefix = strs[0]
         if strs.count > 1 {
             for i in 1..<strs.count {
                 
@@ -644,4 +680,326 @@ extension IQ_StringVC {
         }
     }
      
+}
+
+//MARK:- Medium Category
+extension IQ_StringVC{
+    
+    func groupAnagrams_TimeExceeded(_ strs: [String]) -> [[String]] {
+        //Time Limit Exceeded
+        var groupArr = [[String]]()
+        var dictArr = [[Character: Int]]()
+        
+        if strs.count == 0 { return [[]]}
+        
+        for i in 0..<strs.count{
+            var dict = [Character: Int]()
+            strs[i].map { dict [$0, default: 0] += 1}
+            
+            for j in 0..<dictArr.count{
+                if !dictArr.contains(dict) {
+                    dictArr.append(dict) //found for first time
+                    groupArr.append([strs[i]])
+                } else {
+                    if dictArr[j] == dict{
+                        groupArr[j].append(strs[i])
+                        break
+                    }
+                }
+            }
+            
+            if dictArr.isEmpty{
+                dictArr.append(dict)
+                let arr = [strs[i]]
+                groupArr.append(arr)
+            }
+            
+        }
+        
+        return groupArr
+    }
+    
+    func groupAnagrams(_ strs: [String]) -> [[String]] {
+        if strs.count == 0 { return [[]] }
+        var dictArr = [String:[String]]()
+        var groupArr = [[String]]()
+        
+        for s in strs{
+            dictArr[String(s.sorted()), default: [String]()].append(s)
+        }
+        
+        for (_, value) in dictArr{
+            groupArr.append(value)
+        }
+        
+        return groupArr
+        
+        //One Line Solutio
+//        var dict = Dictionary(grouping: strs, by: { String($0.sorted()) })
+//
+//        return Array(dict.values)
+    }
+    
+    func lengthOfLongestSubstring(_ s: String) -> Int {
+        // Time Limit Exceeded
+        if s.count == 0 { return 0 }
+              var map: [Character: Int] = [Character: Int]()
+              let arr = Array(s)
+              var maxValue = 0
+              var i = 0
+              var j = 0
+              while i < s.count {
+                  if let index = map[arr[i]]{
+                      j = max(j, index + 1)
+                  }
+                  map[arr[i]] = i
+                  maxValue = max(maxValue, i - j + 1)
+                  i += 1
+              }
+              
+              return maxValue
+       
+    }
+    
+    func sol_lengthOfLongestSubstring(_ s: String) -> Int {
+        //Time Limit Exceeded
+        let arr = Array(s)
+        var max = 0
+        var hashSet = Set<Character>() // hash is easy to track unique solutions
+        var i = 0
+        var j = 0
+        
+        while i < s.count && j < s.count {
+            if !hashSet.contains(arr[i]){
+                hashSet.insert(arr[i])
+                i += 1
+                
+                if hashSet.count > max { max = hashSet.count }
+            } else {
+                hashSet.remove(arr[j])
+                j += 1
+            }
+            print(hashSet)
+        }
+        
+        return max
+    }
+    
+    func betterSol_lengthOfLongestSubstring(_ s: String) -> Int {
+        // unique and effective
+        //Two pointer technique
+        guard !s.isEmpty else { return 0 }
+        var left = 0
+        var right = 1
+        var i = 0
+        var maxLength = right - left
+        let array = Array(s)
+        
+        while right < array.count {
+            i = left
+            while i < right {
+                if array[i] == array[right] {
+                    left = i+1
+                    break
+                }
+                i += 1
+            }
+            right += 1
+            maxLength = max(maxLength, right-left)
+        }
+        
+        return maxLength
+    }
+    
+    func longestSubstring(_ s: String) -> Int {
+        // sliding window - easily done - but time limit exceeded
+        // a guy has submitted exact answer and its fine
+        var i = 0
+        var j = 0
+        var maxCount = 0
+        var hashSet = Set<Character>()
+        let arr = Array(s)
+        
+        while i < s.count && j < s.count {
+            if !hashSet.contains(arr[j]){
+                hashSet.insert(arr[j])
+                j += 1
+                maxCount = max(maxCount, j - i)
+            } else {
+                hashSet.remove(arr[i])
+                i += 1
+            }
+        }
+        
+        return maxCount
+    }
+    
+    func longestPalindrome(_ s: String) -> String {
+        //max length of s is 1000
+        //need to solve.. to be continued
+        if s.count == 0 { return "" }
+       
+        var left = 0
+        var right = s.count - 1
+        let arr = Array(s)
+        var maxLength = 0
+        var longestSub = String()
+        
+        outerLoop: while left < arr.count {
+            while left < right {
+                if arr[left] == arr[right]{
+                    if isValidPalindrome(left, right, arr){
+                        //maxLength = max(maxLength, right - left)
+                        if (right - left) > maxLength {
+                            maxLength = right - left
+                            longestSub.removeAll()
+                            for i in left...right{
+                                longestSub.append(arr[i])
+                            }
+                            
+                            if right == arr.count - 1{
+                                break outerLoop
+                            }
+                        }
+                        
+                        break
+                        
+                    } else {
+                        right -= 1
+                    }
+                } else {
+                    right -= 1
+                }
+            }
+            
+            left += 1
+            right = s.count - 1
+        }
+        
+        if longestSub.isEmpty{
+            longestSub.append(arr[0])
+        }
+     
+        return longestSub
+    }
+    
+    func isValidPalindrome(_ i: Int, _ j: Int,_ arr: [Character]) -> Bool {
+        var i = i
+        var j = j
+        
+        while i < j {
+            if arr[i] != arr[j]{
+                return false
+            }
+            i += 1
+            j -= 1
+        }
+    
+        return true
+    }
+    
+    func betterSol_longestPalindrome(_ s: String) -> String {
+        guard s.count > 1 else { return s }
+        let sArr = Array(s)
+        var (maxLen, maxStart, len, i) = (1, 0, s.count-1, 0)
+        
+        while i <= len {
+            var (left,right) = (i,i)
+            
+            //1. Check for same character Eg: aaa
+            while right < len && sArr[right] == sArr[right+1] {
+                right+=1
+            }
+            i = right + 1
+            
+            //Check for matching around Eg: b in baaab
+            //Expand from Middle
+            while left > 0 && right < len && sArr[left-1] == sArr[right+1] {
+                left-=1
+                right+=1
+            }
+            
+            let newLen = (right-left+1)
+            if maxLen < newLen {
+                maxLen = newLen
+                maxStart = left
+            }
+        }
+        let resArr = Array(sArr[maxStart...maxStart+maxLen-1])
+        return resArr.reduce("",{ String($0) + String($1) })
+    }
+
+}
+
+//Revision
+extension IQ_StringVC{
+    func groupAnagrams_Rev(_ strs: [String]) -> [[String]]{
+        var anagrams = [[String]]()
+        var dict = [[Character]: [String]]()
+        if strs.count == 0 { return [] }
+        
+        for s in strs{
+            dict[s.sorted(), default: [String]()].append(s) //O(1) - just adds to the dict
+        }
+        
+        for (_, value) in dict{
+            anagrams.append(value)
+        }
+        
+        return anagrams
+    }
+    
+    func lengthOfLongestSubstring_Rev(_ s: String) -> Int{
+        
+        if s.count == 0 { return 0 }
+        
+        let arr = Array(s)
+        var (left, right, i, maxLength) = (0,1,0,1)
+        
+        while right < s.count{
+            i = left
+            
+            while i < right {
+                if arr[i] == arr[right]{
+                    left = i + 1
+                }
+                i += 1
+            }
+            
+            maxLength = max(maxLength, right - left + 1)
+            right += 1
+        }
+        
+        return maxLength
+    }
+    
+    func longestPalindrome_Rev(_ s: String) -> String{
+        guard s.count > 1 else { return s }
+        let arr = Array(s)
+        var (maxLength, maxStart, i) = (1, 0, 0)
+        
+        while i < s.count{
+            var left = i
+            var right = i
+            
+            while right < s.count-1 && arr[right] == arr[right + 1]{
+                right += 1
+            }
+            i = right + 1
+            
+            while left > 0 && right < (s.count - 1) && arr[left - 1] == arr[right + 1]{
+                left -= 1
+                right += 1
+            }
+            
+            let newLength = right - left + 1
+            if newLength > maxLength{
+                maxLength = newLength
+                maxStart = left
+            }
+        }
+        
+        let sArr = Array(arr[maxStart...(maxStart + maxLength - 1)])
+        return sArr.reduce("",{ String($0) + String($1)})
+    }
 }

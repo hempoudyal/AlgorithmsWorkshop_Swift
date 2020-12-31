@@ -166,6 +166,7 @@ extension IQ_LinkedList {
     
     //3. Reverse Linked List
     // [1,2,3,4,5] -> [5,4,3,2,1]
+    //Recursion
     func reverseList(_ head: ListNode?) -> ListNode? {
         if head?.next == nil || head == nil {
             return head
@@ -175,6 +176,22 @@ extension IQ_LinkedList {
         head?.next?.next = head
         head?.next = nil
         return p
+    }
+    
+    //Iterative
+    func reverseList_Iterative(_ head: ListNode?) -> ListNode? {
+        var currentNode = head
+        var prev: ListNode?
+        var next: ListNode?
+        
+        while currentNode != nil {
+            next = currentNode?.next
+            currentNode?.next = prev
+            prev = currentNode
+            currentNode = next
+        }
+        
+        return prev
     }
     
     //4. Merge Two Sorted Lists
@@ -297,5 +314,31 @@ extension IQ_LinkedList {
     
 }
 
-
-
+//Revision
+extension IQ_LinkedList{
+    func removeNthFromEnd_Rev(_ head: ListNode?, _ n: Int) -> ListNode? {
+        guard let head = head else { return nil }
+        
+        var node: ListNode? = head
+        var nodeCount = 0
+        while node != nil{
+            nodeCount += 1
+            node = node?.next
+        }
+        
+        let nodeIndex = nodeCount - n
+        guard n <= nodeIndex else { return nil }
+        guard nodeIndex != 0 else { return head.next } // gives node at 0 index head (next) -> initial node
+        
+        let previousIndex = nodeIndex - 1
+        node = head // bring back to head
+        
+        for _ in 0..<previousIndex{
+            node = node?.next // comes to a position one step ahead of node
+        }
+        
+        node?.next = node?.next?.next // remove given node
+        
+        return head
+    }
+}

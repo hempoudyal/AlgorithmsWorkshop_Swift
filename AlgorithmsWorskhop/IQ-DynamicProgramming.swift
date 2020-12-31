@@ -49,6 +49,8 @@ class IQ_DynamicProgramming: BaseViewController {
             case 0:
                 let l = firstBadVersion(2)
                 print(l)
+                let s = sortArray([1,2,3,0,0,0], [2,5,6], 3, 3)
+                print(s)
                 break
                 
             default:
@@ -70,10 +72,15 @@ class IQ_DynamicProgramming: BaseViewController {
             case 2:
                 let m = maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
                 print(m)
+                let r = maxSubArray_Rev([1,2])
+                print(r)
                 
             case 3:
                 let r = rob([1,1,3,4])
                 print(r)
+                let x = rob_Rev([1,2,3,1,1,2,3,9])
+                print(x)
+                
             default:
                 break
             }
@@ -257,3 +264,102 @@ extension IQ_DynamicProgramming {
         }
     }
 }
+
+//MARK:-  Sorting and Searching Revision
+
+extension IQ_DynamicProgramming{
+    
+    func sortArray(_ nums1: [Int], _ nums2: [Int], _ m : Int, _ n: Int) -> [Int] {
+        var k = m+n-1
+        var i = m-1
+        var j = n-1
+        var nums1 = nums1
+        
+        while k >= 0 && j>=0 {
+            if i>=0 && nums1[i] > nums2[j] {
+                nums1[k] = nums1[i]
+                i-=1
+            } else {
+                nums1[k] = nums2[j]
+                j-=1
+            }
+            k-=1
+        }
+        
+        return nums1
+    }
+    
+    func firstBadVersion_Rev(_ n: Int) -> Int {
+        //O(logn)
+        var left = 0
+        var right = n - 1
+        
+        while (left < right){
+            let mid = left + (right - left) / 2
+            
+            if isBadVersion(mid){
+                right = mid
+            } else {
+                left = mid + 1
+            }
+        }
+        
+        return left
+    }
+}
+
+//MARK:- Dynamic Programming Revision
+
+extension IQ_DynamicProgramming{
+    
+    func climbStairs_Rev(_ n: Int) -> Int {
+        if n == 0 { return 0 }
+        if n == 1 { return 1 }
+        if n == 2 { return 2 }
+        
+        var d = [1:1, 2:2]
+        
+        for i in 3...n {
+            let curr = d[i - 1]! + d[i - 2]!
+            d[i] = curr
+        }
+        
+        return d[n]!
+    }
+    
+    func maxSubArray_Rev(_ nums: [Int]) -> Int {
+        var sum = 0
+        var maxSum = Int.min
+        
+        for n in nums{
+            sum += n
+            
+            if n > sum{
+                sum = n
+            }
+            
+           maxSum = max(maxSum, sum)
+        }
+        
+        return maxSum
+    }
+    
+    func rob_Rev(_ nums: [Int]) -> Int {
+        if nums.count == 0 { return 0 }
+        if nums.count == 1 { return nums[0] }
+        if nums.count == 2 { return max(nums[0], nums[1])}
+        
+        var dp = Array(repeating: 0, count: nums.count)
+        dp[0] = nums[0]
+        dp[1] = max(nums[0], nums[1])
+        
+        for i in 2..<nums.count{
+            print(dp)
+            dp[i] = max(nums[i] + dp[i - 2], dp[i - 1])
+        }
+        
+        return dp[nums.count - 1]
+    }
+
+}
+
